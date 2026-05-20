@@ -1,0 +1,96 @@
+@startuml
+
+' ======= БАЗОВИЙ КЛАС ========
+
+class User {
+    - id: int
+    - name: string
+    - email: string
+    + login(): bool
+    + logout(): void
+}
+
+' ======= НАЩАДКИ USER ========
+
+class Reader {
+    + searchBooks(): List<Book>
+    + reserveBook(book: Book): void
+    + viewBorrowedBooks(): void
+}
+
+class Librarian {
+    + issueBook(reader: Reader, book: Book): void
+    + returnBook(loan: Loan): void
+}
+
+class Admin {
+    + generateReport(): Report
+    + manageSystem(): void
+}
+
+User <|-- Reader
+User <|-- Librarian
+User <|-- Admin
+
+' ======= КНИГА ТА ПОВ'ЯЗАНІ КЛАСИ ========
+
+class Book {
+    - id: int
+    - title: string
+    - year: int
+    + getInfo(): string
+}
+
+class Author {
+    - id: int
+    - name: string
+}
+
+class Category {
+    - id: int
+    - name: string
+}
+
+Book "1" --> "*" Author : written_by >
+Book "1" --> "*" Category : belongs_to >
+
+' ======= ОПЕРАЦІЇ КНИГ ========
+
+class Loan {
+    - id: int
+    - loanDate: Date
+    - returnDate: Date
+    + markReturned(): void
+}
+
+class Reservation {
+    - id: int
+    - reservationDate: Date
+    + cancel(): void
+}
+
+class Penalty {
+    - id: int
+    - amount: double
+    - reason: string
+}
+
+class Report {
+    - id: int
+    - createdAt: Date
+    + generateStatistics(): void
+}
+
+' ======= ЗВ'ЯЗКИ ========
+
+Reader "1" --> "*" Loan : borrows >
+Loan "*" --> "1" Book : for >
+
+Reader "1" --> "*" Reservation : reserves >
+Reservation "*" --> "1" Book : for >
+
+Loan "0..1" --> "1" Penalty : may_generate >
+
+Admin "1" --> "*" Report : creates >
+
+@enduml
