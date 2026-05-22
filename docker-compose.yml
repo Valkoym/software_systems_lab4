@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+
+  book-service:
+    build: ./book_service
+    ports:
+      - "8005:8000"
+
+  borrow-service:
+    build: ./borrow_service
+    ports:
+      - "9005:8000"
+    depends_on:
+      - book-service
